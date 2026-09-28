@@ -1,0 +1,27 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "site",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--",
+        "--port",
+        "5174",
+        "--strictPort"
+      ],
+      "port": 5174
+    },
+    {
+      "name": "draft",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "-e",
+        "const h=require('http'),f=require('fs'),p=require('path');h.createServer((q,s)=>f.readFile(p.join('资料',decodeURIComponent(q.url.split('?')[0])==='/'?'minimal-draft-1.html':decodeURIComponent(q.url.split('?')[0])),(e,d)=>{s.writeHead(e?404:200,{'Content-Type':'text/html; charset=utf-8'});s.end(e?'404':d)})).listen(5173)"
+      ],
+      "port": 5173
+    }
+  ]
+}

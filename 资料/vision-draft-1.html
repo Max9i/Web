@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vision Draft 1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400&family=Noto+Sans+SC:wght@400;500&display=swap">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<style type="text/tailwindcss">
+  /* 视觉表达卡 v1 */
+  @theme {
+    --color-paper: #f3f0eb;
+    --color-panel: #fbf9f6;
+    --color-mat: #e6e0d7;
+    --color-ink: #2b2724;
+    --color-mute: #8c837b;
+    --color-line: #e2dcd3;
+    --color-accent: #a0694b;
+    --font-sans: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    --font-serif: "Noto Serif SC", "Songti SC", "SimSun", serif;
+    --shadow-soft: 0 30px 80px -24px rgb(60 45 35 / .22);
+  }
+  @keyframes fade { from { opacity: 0; transform: translateY(6px); } }
+  .fade { animation: fade .6s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { .fade { animation: none; } }
+</style>
+</head>
+<body class="bg-paper text-ink font-sans text-[15px] antialiased">
+
+<header class="sticky top-0 z-10 bg-paper">
+  <div class="mx-auto max-w-6xl px-10 h-16 flex items-center justify-between text-sm">
+    <a href="#/" class="font-serif text-base hover:text-accent transition duration-300">（我的名字）</a>
+    <nav class="flex gap-8">
+      <a href="#/" data-nav="home">首页</a>
+      <a href="#/collection" data-nav="collection">收集</a>
+    </nav>
+  </div>
+</header>
+
+<main class="mx-auto max-w-6xl px-10">
+  <section id="home">
+    <div class="pt-24 pb-20 max-w-xl">
+      <h1 class="font-serif font-light text-[40px] leading-tight tracking-wide">（我的名字）</h1>
+      <p class="mt-5 text-mute leading-[1.8]">在这里存放我拍下的、截下的和随手记下的东西。</p>
+    </div>
+    <div class="flex items-baseline justify-between border-t border-line pt-6 mb-10">
+      <h2 class="text-xs tracking-[.18em] text-mute">最近</h2>
+      <a href="#/collection" class="text-sm hover:text-accent transition duration-300">查看全部 <span class="text-accent">→</span></a>
+    </div>
+    <div id="recent" class="columns-3 gap-8"></div>
+  </section>
+
+  <section id="collection" hidden>
+    <div class="pt-20 pb-12 flex items-end justify-between">
+      <div>
+        <h1 class="font-serif font-light text-[40px] leading-tight tracking-wide">收集</h1>
+        <p id="count" class="mt-4 text-xs tracking-wider text-mute"></p>
+      </div>
+      <div id="filters" class="flex gap-8 text-sm"></div>
+    </div>
+    <div id="groups"></div>
+  </section>
+</main>
+
+<footer class="mx-auto max-w-6xl px-10 pt-20 pb-12 text-xs tracking-wider text-mute">© 2026 （我的名字）</footer>
+
+<div id="modal" class="fixed inset-0 z-20 bg-paper/90 hidden" role="dialog" aria-modal="true">
+  <button id="prev" class="absolute left-6 top-1/2 -translate-y-1/2 p-4 text-xl text-mute hover:text-accent transition duration-300 cursor-pointer" aria-label="上一条">←</button>
+  <button id="next" class="absolute right-6 top-1/2 -translate-y-1/2 p-4 text-xl text-mute hover:text-accent transition duration-300 cursor-pointer" aria-label="下一条">→</button>
+  <div id="stage" class="h-full flex items-center justify-center px-28 py-12"></div>
+</div>
+
+<p class="fixed bottom-4 left-4 text-[11px] text-mute">Vision Draft 1 · 视觉表达卡 v1 · 示例内容</p>
+
+<script>
+// 示例数据，从新到旧。photo 的 w/h 是比例，pic 是示例图片编号
+const items = [
+  { type: 'photo', date: '2026-09-26', text: '傍晚回家路上的天。', pic: 399, w: 4, h: 5 },
+  { type: 'note',  date: '2026-09-24', text: '今天什么都没做，但心情不错。' },
+  { type: 'shot',  date: '2026-09-21', text: '朋友发来的一句话。', quote: '慢慢来，比较快。' },
+  { type: 'photo', date: '2026-09-18', text: '楼下新开的咖啡店。', pic: 42, w: 3, h: 2 },
+  { type: 'photo', date: '2026-09-12', text: '桌上的光。', pic: 201, w: 1, h: 1 },
+  { type: 'note',  date: '2026-09-08', text: '秋天第一次穿外套。' },
+  { type: 'shot',  date: '2026-09-02', text: '书里看到的一段话。', quote: '（书摘占位：一段喜欢的文字）' },
+  { type: 'photo', date: '2026-08-28', text: '湖上。', pic: 1011, w: 4, h: 5 },
+  { type: 'note',  date: '2026-08-20', text: '下雨天适合什么都不想。' },
+  { type: 'photo', date: '2026-08-15', text: '路过的巷子。', pic: 1047, w: 3, h: 2 },
+  { type: 'shot',  date: '2026-08-09', text: '备忘录里的一条。', quote: '（截图占位：备忘录内容）' },
+  { type: 'photo', date: '2026-08-03', text: '山里的路。', pic: 1018, w: 2, h: 3 },
+  { type: 'note',  date: '2026-07-30', text: '夏天快过完了。' },
+  { type: 'photo', date: '2026-07-22', text: '一壶茶。', pic: 225, w: 3, h: 2 },
+  { type: 'shot',  date: '2026-07-15', text: '聊天记录里的一句。', quote: '（截图占位：一段对话）' },
+  { type: 'photo', date: '2026-07-06', text: '七月的雪山。', pic: 1036, w: 4, h: 5 },
+];
+const labels = { photo: '照片', shot: '截图', note: '短句' };
+const $ = id => document.getElementById(id);
+const fmt = d => d.replaceAll('-', '.');
+let filter = 'all', ctx = [], cur = -1;
+
+function body(it, big) {
+  if (it.type === 'photo') {
+    const src = `https://picsum.photos/id/${it.pic}/${it.w * 300}/${it.h * 300}`;
+    return big
+      ? `<img src="${src}" alt="${it.text}" class="max-h-[70vh] max-w-full rounded-[2px] bg-mat">`
+      : `<img src="${src}" alt="${it.text}" loading="lazy" class="w-full rounded-[2px] bg-mat group-hover:opacity-90 transition duration-300" style="aspect-ratio:${it.w}/${it.h}">`;
+  }
+  if (it.type === 'shot') {
+    const shot = `<div class="w-full ${big ? 'aspect-[9/19]' : 'aspect-[9/16]'} bg-panel border border-line rounded-[2px] p-5 flex flex-col gap-3">
+        <div class="h-1.5 w-12 bg-line"></div><div class="h-1.5 w-24 bg-line"></div>
+        <p class="my-auto text-sm leading-[1.8]">${it.quote}</p>
+        <div class="h-1.5 w-20 bg-line"></div><div class="h-1.5 w-10 bg-line"></div></div>`;
+    return big ? `<div class="w-[340px] max-h-[70vh] overflow-y-auto">${shot}</div>` : `<div class="group-hover:border-mute transition duration-300">${shot}</div>`;
+  }
+  return big
+    ? `<p class="max-w-xl font-serif font-light text-3xl leading-[1.8] text-center">${it.text}</p>`
+    : `<p class="font-serif text-[19px] leading-[1.8] py-7 border-y border-line group-hover:text-accent transition duration-300">${it.text}</p>`;
+}
+
+function card(it, i, list) {
+  const b = document.createElement('button');
+  b.className = 'fade group block w-full text-left mb-8 break-inside-avoid cursor-pointer';
+  b.style.animationDelay = `${Math.min(i, 8) * 60}ms`;
+  b.innerHTML = body(it, false) + `<p class="mt-3 text-xs tracking-wider text-mute">${fmt(it.date)}</p>`;
+  b.onclick = () => open(list, i);
+  return b;
+}
+
+function open(list, i) {
+  ctx = list; cur = i;
+  const it = list[i];
+  const meta = it.type === 'note'
+    ? `<p class="mt-8 text-xs tracking-wider text-mute text-center">${fmt(it.date)}</p>`
+    : `<p class="mt-6 text-center">${it.text}</p><p class="mt-2 text-xs tracking-wider text-mute text-center">${labels[it.type]} · ${fmt(it.date)}</p>`;
+  $('stage').innerHTML = `<div class="fade relative bg-panel rounded-[2px] shadow-soft px-16 pt-16 pb-10 flex flex-col items-center max-w-full">
+      <button id="close" class="absolute top-5 right-5 text-sm text-mute border border-line rounded-[2px] px-4 py-1.5 hover:text-accent hover:border-accent transition duration-300 cursor-pointer">关闭</button>
+      ${body(it, true)}${meta}</div>`;
+  $('close').onclick = close;
+  $('prev').classList.toggle('invisible', i === 0);
+  $('next').classList.toggle('invisible', i === list.length - 1);
+  $('modal').classList.remove('hidden');
+  document.body.classList.add('overflow-hidden');
+}
+function close() {
+  $('modal').classList.add('hidden');
+  document.body.classList.remove('overflow-hidden');
+}
+$('prev').onclick = () => cur > 0 && open(ctx, cur - 1);
+$('next').onclick = () => cur < ctx.length - 1 && open(ctx, cur + 1);
+$('modal').onclick = e => (e.target.id === 'modal' || e.target.id === 'stage') && close();
+addEventListener('keydown', e => {
+  if ($('modal').classList.contains('hidden')) return;
+  if (e.key === 'Escape') close();
+  if (e.key === 'ArrowLeft') $('prev').click();
+  if (e.key === 'ArrowRight') $('next').click();
+});
+
+const active = 'text-accent underline underline-offset-8 decoration-1';
+const idle = 'text-mute hover:text-accent';
+
+function renderCollection() {
+  const list = filter === 'all' ? items : items.filter(x => x.type === filter);
+  $('count').textContent = `共 ${list.length} 条`;
+  $('filters').innerHTML = '';
+  for (const [k, v] of [['all', '全部'], ['photo', '照片'], ['shot', '截图'], ['note', '短句']]) {
+    const f = document.createElement('button');
+    f.textContent = v;
+    f.className = 'cursor-pointer transition duration-300 ' + (k === filter ? active : idle);
+    f.onclick = () => { filter = k; renderCollection(); };
+    $('filters').append(f);
+  }
+  const groups = $('groups');
+  groups.innerHTML = '';
+  if (!list.length) { groups.innerHTML = '<p class="py-32 text-center text-sm text-mute">这里还没有东西</p>'; return; }
+  const byMonth = {};
+  list.forEach((it, i) => (byMonth[it.date.slice(0, 7)] ??= []).push([it, i]));
+  for (const [m, arr] of Object.entries(byMonth)) {
+    const sec = document.createElement('section');
+    sec.className = 'grid grid-cols-[120px_1fr] gap-8 border-t border-line pt-8 pb-10';
+    sec.innerHTML = `<h3 class="font-serif text-mute sticky top-24 self-start">${m.replace('-', '.')}</h3><div class="columns-3 gap-8"></div>`;
+    arr.forEach(([it, i]) => sec.lastChild.append(card(it, i, list)));
+    groups.append(sec);
+  }
+}
+
+function route() {
+  const c = location.hash === '#/collection';
+  $('home').hidden = c;
+  $('collection').hidden = !c;
+  document.querySelectorAll('[data-nav]').forEach(a => {
+    a.className = 'transition duration-300 ' + ((a.dataset.nav === 'collection') === c ? active : idle);
+  });
+  scrollTo(0, 0);
+}
+
+const recent = items.slice(0, 8);
+recent.forEach((it, i) => $('recent').append(card(it, i, recent)));
+renderCollection();
+addEventListener('hashchange', route);
+route();
+</script>
+</body>
+</html>

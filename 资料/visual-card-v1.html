@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>视觉表达卡 v1</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400&family=Noto+Sans+SC:wght@400;500&display=block">
+<style>
+  :root { --bg:#F3F0EB; --mat:#E6E0D7; --ink:#2B2724; --mute:#8C837B; --accent:#A0694B; --line:#E2DCD3;
+          --serif:"Noto Serif SC", "Songti SC", serif; --sans:"Noto Sans SC", "PingFang SC", sans-serif; }
+  * { box-sizing:border-box; margin:0; }
+  body { width:1600px; height:1000px; background:var(--bg); color:var(--ink); font-family:var(--sans); padding:64px 72px; }
+  .label { font-size:12px; letter-spacing:.18em; color:var(--mute); }
+  .grid { display:grid; grid-template-columns: 560px 1fr; gap:72px; height:100%; }
+  img { display:block; width:100%; height:100%; object-fit:cover; background:var(--mat); border-radius:2px; filter:saturate(.82) sepia(.08); }
+  .rule { border-top:1px solid var(--line); }
+</style>
+</head>
+<body>
+<div class="grid">
+  <!-- 左：气质 -->
+  <div style="display:flex;flex-direction:column;gap:28px">
+    <div>
+      <p class="label">VISUAL CARD · v1</p>
+      <h1 style="font-family:var(--serif);font-weight:300;font-size:44px;margin-top:18px;letter-spacing:.02em">安静 · 有温度 · 讲究</h1>
+      <p style="margin-top:14px;color:var(--mute);font-size:15px;line-height:1.8">像走进一间安静、有人生活过的房间。</p>
+    </div>
+    <div style="display:grid;grid-template-columns:1.25fr 1fr;grid-template-rows:1fr 1fr;gap:14px;flex:1">
+      <div style="grid-row:span 2"><img src="https://picsum.photos/id/326/700/900" alt=""></div>
+      <div><img src="https://picsum.photos/id/24/600/400" alt=""></div>
+      <div><img src="https://picsum.photos/id/42/600/400" alt=""></div>
+    </div>
+  </div>
+
+  <!-- 右：规则 -->
+  <div style="display:flex;flex-direction:column;gap:40px;padding-top:6px">
+    <section>
+      <p class="label">颜色</p>
+      <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-top:16px">
+        <div><div style="height:84px;background:var(--bg);border:1px solid var(--line)"></div><p style="font-size:13px;margin-top:8px">背景</p><p class="label" style="letter-spacing:.06em">#F3F0EB</p></div>
+        <div><div style="height:84px;background:var(--mat)"></div><p style="font-size:13px;margin-top:8px">照片底</p><p class="label" style="letter-spacing:.06em">#E6E0D7</p></div>
+        <div><div style="height:84px;background:var(--line)"></div><p style="font-size:13px;margin-top:8px">分隔线</p><p class="label" style="letter-spacing:.06em">#E2DCD3</p></div>
+        <div><div style="height:84px;background:var(--mute)"></div><p style="font-size:13px;margin-top:8px">次要文字</p><p class="label" style="letter-spacing:.06em">#8C837B</p></div>
+        <div><div style="height:84px;background:var(--ink)"></div><p style="font-size:13px;margin-top:8px">主要文字</p><p class="label" style="letter-spacing:.06em">#2B2724</p></div>
+        <div><div style="height:84px;background:var(--accent)"></div><p style="font-size:13px;margin-top:8px">强调（少用）</p><p class="label" style="letter-spacing:.06em">#A0694B</p></div>
+      </div>
+    </section>
+
+    <section class="rule" style="padding-top:28px;display:grid;grid-template-columns:1.1fr 1fr;gap:48px">
+      <div>
+        <p class="label">文字层级（字形示意）</p>
+        <p style="font-family:var(--serif);font-weight:300;font-size:38px;margin-top:18px">（我的名字）的角落</p>
+        <p style="font-size:15px;line-height:1.8;margin-top:12px;max-width:380px">在这里存放我拍下的、截下的和随手记下的东西。</p>
+        <p class="label" style="margin-top:14px">2026.09.26 · 照片</p>
+      </div>
+      <div>
+        <p class="label">短句</p>
+        <p style="font-family:var(--serif);font-size:22px;line-height:1.8;margin-top:18px;padding:22px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)">今天什么都没做，<br>但心情不错。</p>
+        <p class="label" style="margin-top:12px">2026.09.24</p>
+      </div>
+    </section>
+
+    <section class="rule" style="padding-top:28px;display:grid;grid-template-columns:1.1fr 1fr;gap:48px">
+      <div>
+        <p class="label">导航与筛选</p>
+        <div style="display:flex;gap:32px;margin-top:20px;font-size:15px">
+          <span style="color:var(--mute)">全部</span>
+          <span style="color:var(--accent);border-bottom:1px solid var(--accent);padding-bottom:6px">照片</span>
+          <span style="color:var(--mute)">截图</span>
+          <span style="color:var(--mute)">短句</span>
+        </div>
+        <p style="margin-top:28px;font-size:15px">查看全部 <span style="color:var(--accent)">→</span></p>
+      </div>
+      <div>
+        <p class="label">细节</p>
+        <div style="display:flex;gap:18px;margin-top:20px;align-items:flex-end">
+          <div style="text-align:center"><div style="width:84px;height:64px;border:1px solid var(--line);border-radius:2px"></div><p class="label" style="margin-top:8px;letter-spacing:.04em">细线 · 2px 圆角</p></div>
+          <div style="text-align:center"><div style="width:84px;height:64px;background:#FBF9F6;border-radius:2px;box-shadow:0 18px 40px -12px rgba(60,45,35,.18)"></div><p class="label" style="margin-top:8px;letter-spacing:.04em">淡阴影 · 仅弹窗</p></div>
+          <div style="text-align:center"><div style="height:64px;display:flex;align-items:center"><span style="font-size:14px;color:var(--mute);border:1px solid var(--line);padding:8px 16px;border-radius:2px">关闭</span></div><p class="label" style="margin-top:8px;letter-spacing:.04em">按钮</p></div>
+        </div>
+      </div>
+    </section>
+
+    <p class="label" style="margin-top:auto;letter-spacing:.08em">避免：冷冰冰 · 太可爱 · 太用力 · 太旧太土</p>
+  </div>
+</div>
+</body>
+</html>
